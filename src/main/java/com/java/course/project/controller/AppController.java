@@ -1,11 +1,11 @@
 package com.java.course.project;
 
-import com.java.course.project.core.domainmodel.TestStatistic;
+import com.java.course.project.core.entity.TestStatistic;
 import com.java.course.project.core.valueobject.AppArgument;
 import com.java.course.project.service.AppArgumentParser;
 import com.java.course.project.service.RequestService;
-import com.java.course.project.service.presenter.ReportPresenter;
-import com.java.course.project.service.presenter.StreamReportPresenter;
+import com.java.course.project.presenter.ReportPresenter;
+import com.java.course.project.presenter.StreamReportPresenter;
 
 public class AppController {
     private RequestService requestService;
@@ -23,6 +23,7 @@ public class AppController {
             presenter.present(Main.PERCENTS, testStatistic);
         } catch (InterruptedException e) {
             Main.LOGGER.warning(e.getMessage());
+            Thread.currentThread().interrupt();
         }
     }
 }
