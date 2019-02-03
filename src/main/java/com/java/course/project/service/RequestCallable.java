@@ -1,6 +1,7 @@
 package com.java.course.project.service;
 
-import com.java.course.project.core.domainmodel.Response;
+import com.java.course.project.core.InvalidEntityException;
+import com.java.course.project.core.entity.Response;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -10,7 +11,7 @@ import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
 public class RequestCallable implements Callable<Response> {
-    public static Logger LOGGER = Logger.getLogger(RequestCallable.class.getName());
+    private static final Logger LOG = Logger.getLogger(RequestCallable.class.getName());
     private HttpURLConnection connection;
 
     public RequestCallable(URL url, int timeout) throws IOException {
@@ -25,15 +26,13 @@ public class RequestCallable implements Callable<Response> {
 
     private Response connect() {
         Response report = null;
+
         try {
             long start = System.currentTimeMillis();
             connection.connect();
-
             report = getResponse(System.currentTimeMillis() - start);
-
-//            LOGGER.info(Thread.currentThread().getName());
-        } catch (IOException e) {
-            LOGGER.warning(Arrays.toString(e.getStackTrace()));
+        } catch (IOException| InvalidEntityException e) {
+            LOG.warning(Arrays.toString(e.getStackTrace()));
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -43,7 +42,7 @@ public class RequestCallable implements Callable<Response> {
         return report;
     }
 
-    private Response getResponse(Long responseTime) throws IOException {
+    private Response getResponse(Long responseTime) throws IOException, InvalidEntityException {
         Integer responseCode = connection.getResponseCode();
         Integer transferBytes = connection.getContentLength();
         return new Response(responseCode, transferBytes, responseTime);

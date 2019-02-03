@@ -1,6 +1,6 @@
-package com.java.course.project.service.presenter;
+package com.java.course.project.presenter;
 
-import com.java.course.project.core.domainmodel.TestStatistic;
+import com.java.course.project.core.entity.TestStatistic;
 
 import java.util.List;
 

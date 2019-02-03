@@ -1,19 +1,17 @@
-package com.java.course.project;
+package com.java.course.project.controller;
 
+import com.java.course.project.Main;
 import com.java.course.project.core.entity.TestStatistic;
-import com.java.course.project.core.valueobject.AppArgument;
-import com.java.course.project.service.AppArgumentParser;
 import com.java.course.project.service.RequestService;
 import com.java.course.project.presenter.ReportPresenter;
 import com.java.course.project.presenter.StreamReportPresenter;
 
 public class AppController {
-    private RequestService requestService;
-    private ReportPresenter presenter;
+    private final RequestService requestService;
+    private final ReportPresenter presenter;
 
-    public AppController(AppArgumentParser argumentParser, StreamReportPresenter presenter) {
-        AppArgument argument = argumentParser.getApplicationArgument();
-        this.requestService = new RequestService(argument.getUrl(), argument.getConcurrency(), argument.getTotalRequest(), argument.getTimeout());
+    public AppController(StreamReportPresenter presenter, RequestService requestService) {
+        this.requestService = requestService;
         this.presenter = presenter;
     }
 
@@ -22,7 +20,7 @@ public class AppController {
             TestStatistic testStatistic = requestService.execute();
             presenter.present(Main.PERCENTS, testStatistic);
         } catch (InterruptedException e) {
-            Main.LOGGER.warning(e.getMessage());
+            Main.LOG.warning(e.getMessage());
             Thread.currentThread().interrupt();
         }
     }

@@ -1,7 +1,8 @@
 package com.java.course.project.service;
 
-import com.java.course.project.core.domainmodel.Response;
-import com.java.course.project.core.domainmodel.TestStatistic;
+import com.java.course.project.core.entity.Response;
+import com.java.course.project.core.entity.TestStatistic;
+import com.java.course.project.core.valueobject.AppArgument;
 
 import java.io.IOException;
 import java.net.URL;
@@ -12,7 +13,7 @@ import java.util.concurrent.*;
 import java.util.logging.Logger;
 
 public class RequestService {
-    public static final Logger LOGGER = Logger.getLogger(RequestService.class.getName());
+    private static final Logger LOG = Logger.getLogger(RequestService.class.getName());
 
     private final URL url;
     private final Integer concurrency;
@@ -20,12 +21,12 @@ public class RequestService {
     private final int timeout;
     private final ExecutorService service;
 
-    public RequestService(URL url, Integer concurrency, Integer totalRequest, int timeout) {
-        this.url = url;
-        this.concurrency = concurrency;
-        this.totalRequest = totalRequest;
-        this.timeout = timeout;
-        this.service = Executors.newFixedThreadPool(concurrency);
+    public RequestService(AppArgument argument, ExecutorService service) {
+        this.url = argument.getUrl();
+        this.concurrency = argument.getConcurrency();
+        this.totalRequest = argument.getTotalRequest();
+        this.timeout = argument.getTimeout();
+        this.service = service;
     }
 
     public TestStatistic execute() throws InterruptedException {
@@ -39,7 +40,8 @@ public class RequestService {
             service.shutdown();
             return generateTestStatistic(futures, totalTestTime);
         } catch (InterruptedException e) {
-            LOGGER.warning(e.getMessage());
+            LOG.warning(e.getMessage());
+            Thread.currentThread().interrupt();
             throw new InterruptedException(e.getMessage());
         }
     }
@@ -55,7 +57,7 @@ public class RequestService {
             RequestCallable requestCallable = new RequestCallable(url, timeout);
             callableList.add(requestCallable);
         } catch (IOException e) {
-            LOGGER.warning(Arrays.toString(e.getStackTrace()));
+            LOG.warning(Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -76,9 +78,10 @@ public class RequestService {
                 Response response = responseFuture.get();
                 responses.add(response);
             } catch (ExecutionException e) {
-                LOGGER.info(e.getMessage());
+                LOG.info(e.getMessage());
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
+                LOG.warning(e.getMessage());
             }
         }
     }

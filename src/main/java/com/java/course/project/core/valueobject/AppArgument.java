@@ -2,6 +2,7 @@ package com.java.course.project.core.valueobject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Objects;
 
 public class AppArgument {
     public static final int DEFAULT_TIMEOUT = 30 * 1000;
@@ -31,5 +32,31 @@ public class AppArgument {
 
     public int getTimeout() {
         return timeout;
+    }
+
+    @Override
+    public String toString() {
+        return "AppArgument{" +
+                "url=" + url +
+                ", totalRequest=" + totalRequest +
+                ", concurrency=" + concurrency +
+                ", timeout=" + timeout +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AppArgument that = (AppArgument) o;
+        return totalRequest == that.totalRequest &&
+                concurrency == that.concurrency &&
+                timeout == that.timeout &&
+                Objects.equals(url, that.url);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(url, totalRequest, concurrency, timeout);
     }
 }

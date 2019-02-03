@@ -1,4 +1,4 @@
-package com.java.course.project.core.domainmodel;
+package com.java.course.project.core.entity;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -22,10 +22,11 @@ public class TestStatistic {
         this.reports = responses;
         this.responses = responses;
 
-        responses.sort(Comparator.comparing(Response::getResponseTime));
         this.countFailedRequest = 0;
         this.totalTransferBytes= 0;
         this.totalResponseTime= 0L;
+
+        responses.sort(Comparator.comparing(Response::getResponseTime));
         for (Response response : responses) {
             if (response.getResponseCode() >= 300) {
                 countFailedRequest++;

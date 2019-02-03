@@ -1,6 +1,6 @@
-package com.java.course.project.service.presenter;
+package com.java.course.project.presenter;
 
-import com.java.course.project.core.domainmodel.TestStatistic;
+import com.java.course.project.core.entity.TestStatistic;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class StreamReportPresenter implements ReportPresenter {
-    public static final Logger LOGGER = Logger.getLogger(StreamReportPresenter.class.getName());
+    private static final Logger LOG = Logger.getLogger(StreamReportPresenter.class.getName());
 
     private OutputStream outputStream;
 
@@ -37,7 +37,7 @@ public class StreamReportPresenter implements ReportPresenter {
         try {
             outputStream.write(string.getBytes());
         } catch (IOException e) {
-            LOGGER.warning(Arrays.toString(e.getStackTrace()));
+            LOG.warning(Arrays.toString(e.getStackTrace()));
         }
     }
 }

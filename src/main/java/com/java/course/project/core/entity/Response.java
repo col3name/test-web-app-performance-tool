@@ -1,4 +1,6 @@
-package com.java.course.project.core.domainmodel;
+package com.java.course.project.core.entity;
+
+import com.java.course.project.core.InvalidEntityException;
 
 import java.util.Objects;
 
@@ -7,7 +9,19 @@ public class Response {
     private final Integer transmittedBytes;
     private final Long responseTime;
 
-    public Response(Integer responseCode, Integer transmittedBytes, Long responseTime) {
+    public Response(Integer responseCode, Integer transmittedBytes, Long responseTime) throws InvalidEntityException {
+        if (responseCode < 100 || responseCode > 600) {
+            throw new InvalidEntityException("Invalid response code '" + responseCode + "'");
+        }
+
+        if (transmittedBytes < 0) {
+            throw new InvalidEntityException("transmittedBytes must be more than 0");
+        }
+
+        if (responseTime < 0) {
+            throw new InvalidEntityException("responseTime must be more than 0");
+        }
+
         this.responseCode = responseCode;
         this.transmittedBytes = transmittedBytes;
         this.responseTime = responseTime;
